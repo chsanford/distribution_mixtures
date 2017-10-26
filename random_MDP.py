@@ -1,5 +1,6 @@
 import random
 import itertools
+import numpy as np
 
 class RandomMDP:
     """
@@ -9,18 +10,21 @@ class RandomMDP:
 
     ran = random.Random()
 
-    def __init__(self, num_states, num_actions):
+    def __init__(self, num_states, num_actions, gamma=0.9, seed=None):
+        # Seed the random number generator for multiple experiments.
+        self.ran.seed(seed)
         self.num_states = num_states
         self.num_actions = num_actions
-        self.transitions = []
-        self.generate_new_transitions()
-        self.rewards = []
-        self.generate_new_reward()
+        self.gamma = gamma
+        self.transitions = self.generate_new_transitions()
+        self.rewards = self.generate_new_reward()
+        self.v_star, self.p_opt = self.solve()
 
     def generate_new_transitions(self):
+        transitions = []
         # For each state,
         for state in range(self.num_states):
-            self.transitions.append([])
+            transitions.append([])
             # For each action,
             for action in range(self.num_actions):
                 # Generate a distribution over next states by,
@@ -31,13 +35,12 @@ class RandomMDP:
                 # Normalize.
                 s = sum(next_state_dist)
                 next_state_dist = [w/s for w in next_state_dist]
-                self.transitions[state].append(next_state_dist)
-        return
+                transitions[state].append(next_state_dist)
+        return np.array(transitions)
 
     def generate_new_reward(self):
         # Sample rewards uniformly and independently from [0,1) with additive Gaussian noise, s.d. = 0.1.
-        self.rewards = [self.ran.random() + self.ran.gauss(0, 0.1) for state in range(self.num_states)]
-        return
+        return np.random.uniform(size=self.num_states) + np.random.normal(scale=0.1, size=self.num_states)
 
     def get_next_state(self, state, action):
         # Calculates a next state, given current state and action, according to transition matrix.
@@ -53,6 +56,30 @@ class RandomMDP:
         # Returns the reward for a given state.
         return self.rewards[state]
 
+    def solve(self, theta=1E-4):
+        diffs = np.full(self.num_states, float('inf'))
+        v_curr, v_next = np.zeros(self.num_states), np.zeros(self.num_states)
+        while not all(diff <= theta for diff in diffs):
+            v_next, _ = self.vi_update(v_curr)
+            diffs = v_next - v_curr
+            print diffs
+            v_curr = v_next
+        return self.vi_update(v_curr)
+
+    def vi_update(self, v_curr):
+        v_next = np.zeros(self.num_states)
+        policy_curr = np.full(self.num_states, -1)
+        for state in range(self.num_states):
+            max_v = float('-inf')
+            for action in range(self.num_actions):
+                v = np.dot(self.rewards + np.array([self.gamma * v_curr[s] for s in range(self.num_states)]),
+                           self.transitions[state][action])
+                if v >= max_v:
+                    max_v = v
+                    policy_curr[state] = action
+            v_next[state] = max_v
+        return v_next, policy_curr
+
     def __str__(self):
         # Format string to print T and R matrices.
         states = ["s%d" % state for state in range(self.num_states)]
@@ -60,7 +87,7 @@ class RandomMDP:
         rows = [row[0]+row[1] for row in itertools.product(states,actions)]
         row_format = "{:>20}" * (len(states) + 1)
         out = "Transitions:\n" + row_format.format("", *states) + '\n\n'
-        for state, row in zip(rows, sum(self.transitions,[])):
+        for state, row in zip(rows, sum(np.ndarray.tolist(self.transitions),[])):
             out += row_format.format(state, *row) + '\n\n'
         out += "\n\nRewards:\n" + row_format.format("", *states) + '\n\n'
         out += row_format.format("", *self.rewards) + '\n\n'
