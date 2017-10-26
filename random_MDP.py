@@ -57,13 +57,11 @@ class RandomMDP:
         return self.rewards[state]
 
     def solve(self, theta=1E-4, max_iter=float('inf')):
-        # Uses value iteration with threshold theta or maximum iterations max_iter to solve an MDP.
-        if max_iter < float('inf'):
-            theta = 0
+        # Uses value iteration with threshold theta and/or maximum iterations max_iter to solve an MDP.
         diffs = np.full(self.num_states, float('inf'))
         v_curr, v_next = np.zeros(self.num_states), np.zeros(self.num_states)
         i = 0
-        while not all(diff <= theta for diff in diffs) and i < max_iter:
+        while (not all(diff <= theta for diff in diffs)) or (i < max_iter):
             v_next, _ = self.vi_update(v_curr)
             diffs = v_next - v_curr
             v_curr = v_next
@@ -71,6 +69,7 @@ class RandomMDP:
         return self.vi_update(v_curr)
 
     def vi_update(self, v_curr):
+        # A single update of value iteration.
         v_next = np.zeros(self.num_states)
         policy_curr = np.full(self.num_states, -1)
         for state in range(self.num_states):
