@@ -8,10 +8,9 @@ class RandomMDP:
     https://web.eecs.umich.edu/~baveja/Papers/gamma-AAMAS-final.pdf
     """
 
-    ran = random.Random()
-
     def __init__(self, num_states, num_actions, gamma=0.9, seed=None):
         # Seed the random number generator for multiple experiments.
+        self.ran = random.Random()
         self.ran.seed(seed)
         self.num_states = num_states
         self.num_actions = num_actions
@@ -56,7 +55,7 @@ class RandomMDP:
         # Returns the reward for a given state.
         return self.rewards[state]
 
-    def solve(self, theta=1E-4, max_iter=float('inf')):
+    def solve(self, theta=1E-4, max_iter=-1):
         # Uses value iteration with threshold theta and/or maximum iterations max_iter to solve an MDP.
         diffs = np.full(self.num_states, float('inf'))
         v_curr, v_next = np.zeros(self.num_states), np.zeros(self.num_states)
