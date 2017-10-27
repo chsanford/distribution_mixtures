@@ -17,7 +17,7 @@ class RandomMDP:
         self.gamma = gamma
         self.transitions = self.generate_new_transitions()
         self.rewards = self.generate_new_reward()
-        self.v_star, self.p_opt = self.solve()
+        self.p_opt, self.v_star, self.q_star = self.solve()
 
     def generate_new_transitions(self):
         transitions = []
@@ -55,8 +55,9 @@ class RandomMDP:
         # Returns the reward for a given state.
         return self.rewards[state]
 
-    def solve(self, theta=1E-4, max_iter=-1):
+    def solve(self, theta=1E-10, max_iter=-1):
         # Uses value iteration with threshold theta and/or maximum iterations max_iter to solve an MDP.
+        #TODO How do we want to output multiple optimal poicies?
         diffs = np.full(self.num_states, float('inf'))
         v_curr, v_next = np.zeros(self.num_states), np.zeros(self.num_states)
         i = 0
@@ -65,7 +66,9 @@ class RandomMDP:
             diffs = v_next - v_curr
             v_curr = v_next
             i += 1
-        return self.vi_update(v_curr)
+        v_star, p_star = self.vi_update(v_curr)
+        q_star = np.transpose(np.tile(self.rewards, (2,1))) + np.dot(self.transitions, v_star) * self.gamma
+        return p_star, v_star, q_star
 
     def vi_update(self, v_curr):
         # A single update of value iteration.
@@ -94,3 +97,37 @@ class RandomMDP:
         out += "\n\nRewards:\n" + row_format.format("", *states) + '\n\n'
         out += row_format.format("", *self.rewards) + '\n\n'
         return out
+
+def main():
+    #SANITY CHECK
+    m = RandomMDP(7, 2)
+    m.transitions = np.array([[[0.9, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0],
+                               [0.1, 0.9, 0.0, 0.0, 0.0, 0.0, 0.0]],
+
+                              [[0.9, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0],
+                               [0.1, 0.0, 0.9, 0.0, 0.0, 0.0, 0.0]],
+
+                              [[0.0, 0.9, 0., 0.1, 0.0, 0.0, 0.0],
+                               [0.0, 0.1, 0.0, 0.9, 0.0, 0.0, 0.0]],
+
+                              [[0.0, 0.0, 0.9, 0.0, 0.1, 0.0, 0.0],
+                               [0.0, 0.0, 0.1, 0.0, 0.9, 0.0, 0.0]],
+
+                              [[0.0, 0.0, 0.0, 0.9, 0.0, 0.1, 0.0],
+                               [0.0, 0.0, 0.0, 0.1, 0.0, 0.9, 0.0]],
+
+                              [[0.0, 0.0, 0.0, 0.0, 0.9, 0.0, 0.1],
+                               [0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.9]],
+
+                              [[0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.1],
+                               [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.9]]
+                              ])
+    m.rewards = [0., 1., 1., -5., 1., 1., 0.]
+    print
+    print m.solve()[0]
+    print m.solve()[2]
+
+
+if __name__ == '__main__':
+    main()
+
