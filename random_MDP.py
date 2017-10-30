@@ -57,7 +57,6 @@ class RandomMDP:
 
     def solve(self, theta=1E-10, max_iter=-1):
         # Uses value iteration with threshold theta and/or maximum iterations max_iter to solve an MDP.
-        #TODO How do we want to output multiple optimal poicies?
         diffs = np.full(self.num_states, float('inf'))
         v_curr, v_next = np.zeros(self.num_states), np.zeros(self.num_states)
         i = 0
@@ -66,9 +65,15 @@ class RandomMDP:
             diffs = v_next - v_curr
             v_curr = v_next
             i += 1
-        v_star, p_star = self.vi_update(v_curr)
-        q_star = np.transpose(np.tile(self.rewards, (2,1))) + np.dot(self.transitions, v_star) * self.gamma
-        return p_star, v_star, q_star
+        v_star, _ = self.vi_update(v_curr)
+        q_star = np.dot(self.transitions, self.rewards) + np.dot(self.transitions, v_star) * self.gamma
+        p_star = [[] for i in range(self.num_states)]
+        for state, action in np.argwhere(q_star == np.transpose([np.amax(q_star, 1)])):
+            p_star[state].append(action)
+        p_opt = [""]
+        for action_list in p_star:
+            p_opt = [pol + str(action) for action in action_list for pol in p_opt]
+        return p_opt, v_star, q_star
 
     def vi_update(self, v_curr):
         # A single update of value iteration.
@@ -77,8 +82,8 @@ class RandomMDP:
         for state in range(self.num_states):
             max_v = float('-inf')
             for action in range(self.num_actions):
-                v = np.dot(self.rewards + np.array([self.gamma * v_curr[s] for s in range(self.num_states)]),
-                           self.transitions[state][action])
+                v = np.dot(self.transitions[state][action],
+                           self.rewards + np.array([self.gamma * v_curr[s] for s in range(self.num_states)]))
                 if v >= max_v:
                     max_v = v
                     policy_curr[state] = action
@@ -96,6 +101,8 @@ class RandomMDP:
             out += row_format.format(state, *row) + '\n\n'
         out += "\n\nRewards:\n" + row_format.format("", *states) + '\n\n'
         out += row_format.format("", *self.rewards) + '\n\n'
+        out += "\n\nPolicies:\n"
+        out += "\n".join(self.p_opt) + "\n\n"
         return out
 
 def main():
@@ -123,9 +130,8 @@ def main():
                                [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.9]]
                               ])
     m.rewards = [0., 1., 1., -5., 1., 1., 0.]
-    print
-    print m.solve()[0]
-    print m.solve()[2]
+    print m.solve()
+    print m
 
 
 if __name__ == '__main__':

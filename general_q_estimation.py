@@ -99,13 +99,13 @@ def find_greedy_policy(initial_policy, transition, reward):
     for i in range(GRAD_DESCENT_ITERATIONS):
         sess.run(train)
 
-    print("state action dist", state_action_dist)
-    print("w", sess.run(w))
-    print("Q-Values", sess.run(q_values))
-    print("Max Q-Values", sess.run(max_action_q_values))
-    print("Next State Reward", sess.run(next_state_reward))
-    print("expected_future_reward", sess.run(expected_future_reward))
-    print("Error",sess.run(error))
+    # print("state action dist", state_action_dist)
+    # print("w", sess.run(w))
+    # print("Q-Values", sess.run(q_values))
+    # print("Max Q-Values", sess.run(max_action_q_values))
+    # print("Next State Reward", sess.run(next_state_reward))
+    # print("expected_future_reward", sess.run(expected_future_reward))
+    # print("Error",sess.run(error))
 
     w_val = sess.run(w)
     q_value_val = sess.run(q_values)
