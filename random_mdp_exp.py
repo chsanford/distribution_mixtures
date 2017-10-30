@@ -4,9 +4,9 @@ import sys
 
 
 def main(args):
-    num_states = args[1]
-    num_actions = args[2]
-    seed = args[3]
+    num_states = int(args[1])
+    num_actions = int(args[2])
+    seed = int(args[3])
     input_pol = args[4]
 
     rmdp = r.RandomMDP(num_states,  num_actions, seed=seed)
@@ -15,7 +15,7 @@ def main(args):
 
 def exp_file(num_states, num_actions, seed):
     with open(seed+"/exp"+seed+".txt", 'w') as f:
-        f.write(r.RandomMDP(num_states,num_actions,seed))
+        f.write(r.RandomMDP(int(num_states),int(num_actions),int(seed)))
         f.close
     return
 
