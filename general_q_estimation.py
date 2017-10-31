@@ -38,7 +38,7 @@ def find_greedy_policy(initial_policy, transition, reward):
 
     # Calculates Q-values from polynomial coefficients. The first row is for
     #   moving right and the second is for left.
-    q_values = tf.matmul(w, tf.transpose(state_basis_matrix))
+    q_values = tf.matmul(w, state_basis_matrix)
 
     # Maximum Q-value between 2 actions leaving each state
     max_action_q_values = tf.reduce_max(q_values, 0)
