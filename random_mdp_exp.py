@@ -11,7 +11,7 @@ def main(args):
 
 
     rmdp = r.RandomMDP(num_states,  num_actions, seed=seed)
-    qe.find_greedy_policy(input_pol, rmdp.transitions, rmdp.rewards)
+    print qe.find_greedy_policy(input_pol, rmdp.transitions, rmdp.rewards)
     return
 
 def exp_file(num_states, num_actions, seed):
