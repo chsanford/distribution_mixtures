@@ -21,6 +21,8 @@ def find_greedy_policy(initial_policy, transition, reward):
     reward - an array representing reward for each state
     '''
 
+    initial_policy = [float(p) for p in initial_policy]
+
     ## Set up q-values computation from weights and states
 
     number_states = len(initial_policy)
