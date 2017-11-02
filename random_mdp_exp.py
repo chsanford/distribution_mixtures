@@ -7,7 +7,8 @@ def main(args):
     num_states = int(args[1])
     num_actions = int(args[2])
     seed = int(args[3])
-    input_pol = args[4]
+    input_pol = [int(b) for b in format(int(args[4]), '0%db' % num_states)]
+
 
     rmdp = r.RandomMDP(num_states,  num_actions, seed=seed)
     qe.find_greedy_policy(input_pol, rmdp.transitions, rmdp.rewards)
