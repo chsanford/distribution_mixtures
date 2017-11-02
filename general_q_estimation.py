@@ -21,7 +21,7 @@ def find_greedy_policy(initial_policy, transition, reward):
     reward - an array representing reward for each state
     '''
 
-    initial_policy = np.asarray(initial_policy)
+    init_pol = np.asarray(initial_policy)
 
     ## Set up q-values computation from weights and states
 
@@ -50,8 +50,8 @@ def find_greedy_policy(initial_policy, transition, reward):
 
     # Probability of choosing each action
     action_dist = np.asarray([
-        initial_policy * (1 - POLICY_OBEY_RATE) + (1 - initial_policy) * POLICY_OBEY_RATE,
-        initial_policy * POLICY_OBEY_RATE + (1 - initial_policy) * (1 - POLICY_OBEY_RATE)])
+        init_pol * (1 - POLICY_OBEY_RATE) + (1 - init_pol) * POLICY_OBEY_RATE,
+        init_pol * POLICY_OBEY_RATE + (1 - init_pol) * (1 - POLICY_OBEY_RATE)])
 
     # Probability of choosing each state from a prior state given the policy
     next_state_dist = []
