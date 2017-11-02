@@ -42,10 +42,11 @@ do
 
     for t in `seq 1 $NUMTRIALS`;
     do
-        for p in `seq 0 $POLICIES`;
-        do
-            qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $SEED $p
-        done
+#        for p in `seq 0 $POLICIES`;
+#        do
+#            qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $SEED $p
+#        done
+        qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $SEED
     done
     cd ..
 done
