@@ -6,6 +6,7 @@ POLICIES=$(((1<<$SIZE)-1))
 ITER=`expr $SIZE - 1`
 NUMTRIALS=$2
 NUMEXPS=$1
+COUNT=0
 
 for r in `seq 0 $NUMEXPS`
 do
@@ -47,6 +48,8 @@ do
 #            qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $SEED $p
 #        done
         qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $SEED
+        COUNT=$((COUNT+1))
     done
     cd ..
 done
+echo "$COUNT jobs submitted."
