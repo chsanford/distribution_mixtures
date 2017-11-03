@@ -13,8 +13,8 @@ source /gpfs/main/home/ctrimbac/envs/tensorflow/bin/activate
 for r in `seq 1 $NUMEXPS`
 do
     SEED=$RANDOM
-    python -c "import random_mdp_exp as r; r.exp_file($SIZE, $ACTIONS, $SEED)"
     mkdir $SEED
+    python -c "import random_mdp_exp as r; r.exp_file($SIZE, $ACTIONS, $SEED)"
     cd $SEED
     OUTFILE="results.csv"
     echo -n "train_policy, greedy_policy, err," >> $OUTFILE
