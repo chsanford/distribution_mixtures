@@ -8,6 +8,8 @@ NUMTRIALS=$2
 NUMEXPS=$1
 COUNT=0
 
+source /gpfs/main/home/ctrimbac/envs/tensorflow/bin/activate
+
 for r in `seq 1 $NUMEXPS`
 do
     SEED=$RANDOM
