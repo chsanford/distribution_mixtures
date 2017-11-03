@@ -1,9 +1,10 @@
 import random_MDP as r
-import general_q_estimation as qe
 import sys
 
 
 def main(args):
+    import general_q_estimation as qe
+
     num_states = int(args[1])
     num_actions = int(args[2])
     seed = int(args[3])
@@ -24,7 +25,7 @@ def main(args):
 
 def exp_file(num_states, num_actions, seed):
     with open(str(seed)+"/exp"+str(seed)+".txt", 'w') as f:
-        f.write(str(r.RandomMDP(int(num_states),int(num_actions),int(seed))))
+        f.write(str(r.RandomMDP(int(num_states),int(num_actions),seed=int(seed))))
         f.close
     return
 
