@@ -8,7 +8,7 @@ NUMTRIALS=$2
 NUMEXPS=$1
 COUNT=0
 
-for r in `seq 1qstat $NUMEXPS`
+for r in `seq 1 $NUMEXPS`
 do
     SEED=$RANDOM
     qstatpython -c 'import random_mdp_exp as r; r.exp_file($SIZE, $ACTIONS, $SEED)'
