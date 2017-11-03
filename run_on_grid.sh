@@ -11,7 +11,7 @@ COUNT=0
 for r in `seq 1 $NUMEXPS`
 do
     SEED=$RANDOM
-    qstatpython -c 'import random_mdp_exp as r; r.exp_file($SIZE, $ACTIONS, $SEED)'
+    python -c 'import random_mdp_exp as r; r.exp_file($SIZE, $ACTIONS, $SEED)'
     mkdir $SEED
     cd $SEED
     OUTFILE="results.csv"
