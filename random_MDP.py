@@ -12,7 +12,7 @@ class RandomMDP:
         # Seed the random number generator for multiple experiments.
         self.ran = random.Random()
         self.ran.seed(seed)
-        numpy.random.seed(seed)
+        np.random.seed(seed)
         self.num_states = num_states
         self.num_actions = num_actions
         self.gamma = gamma
