@@ -15,11 +15,9 @@ def main(args):
         input_pol = rmdp.p_opt
     for pol in input_pol:
         res = qe.find_greedy_policy(pol, rmdp.transitions, rmdp.rewards)
-        if res.split(',')[1] in input_pol:
-            print res
-        else:
+        if res.split(',')[1] not in input_pol:
             print "FAILED"
-            print res.split[:2]
+        print res
     return
 
 
