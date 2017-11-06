@@ -14,7 +14,7 @@ def main(args):
     if not input_pol:
         input_pol = rmdp.p_opt
     for pol in input_pol:
-        res = qe.find_greedy_policy(input_pol, rmdp.transitions, rmdp.rewards)
+        res = qe.find_greedy_policy(pol, rmdp.transitions, rmdp.rewards)
         if res.split(',')[0] in input_pol:
             print res
         else:
