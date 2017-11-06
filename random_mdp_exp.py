@@ -15,7 +15,7 @@ def main(args):
         input_pol = rmdp.p_opt
     for pol in input_pol:
         res = qe.find_greedy_policy(pol, rmdp.transitions, rmdp.rewards)
-        if int(res.split(',')[1]) in rmdp.p_opt:
+        if res.split(',')[1] in rmdp.p_opt:
             print res + ", optimal\n"
         else:
             print res + ", suboptimal\n"
