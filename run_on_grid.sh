@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-SIZE=7
+SIZE=4
 ACTIONS=2
+POLYDIM=2
 POLICIES=$(((1<<$SIZE)-1))
 ITER=`expr $SIZE - 1`
 NUMTRIALS=$2
@@ -29,7 +30,7 @@ do
     WEIGHTS=(w_L w_R)
     for w in ${WEIGHTS[@]};
     do
-        for j in `seq 0 3`;
+        for j in `seq 0 $POLYDIM`;
         do
             echo -n " $w$j," >> $OUTFILE
         done
@@ -50,7 +51,7 @@ do
 #        do
 #            qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $SEED $p
 #        done
-        qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $SEED
+        qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $POLYDIM $SEED
         COUNT=$((COUNT+1))
     done
     cd ..

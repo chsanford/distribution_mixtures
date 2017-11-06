@@ -10,7 +10,7 @@ POLICY_OBEY_RATE = 0.9
 OPPOSITE_ACTION_RATE = 0.1
 DISCOUNT_FACTOR = 0.9
 
-def find_greedy_policy(initial_policy, transition, reward):
+def find_greedy_policy(initial_policy, transition, reward, poly_deg=3):
     '''
     For a given policy, optimizes the Q-values to minimize Least Squares Bellman
     error. Then, finds the policy minimizing error for those Q-values.
@@ -20,6 +20,10 @@ def find_greedy_policy(initial_policy, transition, reward):
         probability of tranditioning from s to s' with action a
     reward - an array representing reward for each state
     '''
+
+    if poly_deg:
+        global POLYNOMIAL_DEGREE
+        POLYNOMIAL_DEGREE = poly_deg
 
     init_pol = np.asarray([float(p) for p in initial_policy])
 
