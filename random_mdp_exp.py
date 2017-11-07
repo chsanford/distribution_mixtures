@@ -20,7 +20,7 @@ def main(args):
             print res + ", optimal\n"
         else:
             print res + ", suboptimal\n"
-        print "\n ", res.split(',')[1], rmdp.p_opt
+        print "\n ", res.split(',')[1], type(res.split(',')[1]), rmdp.p_opt
     return
 
 
