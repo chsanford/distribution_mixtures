@@ -20,6 +20,7 @@ def main(args):
             print res + ", optimal\n"
         else:
             print res + ", suboptimal\n"
+        print "/n ", rmdp.p_opt
     return
 
 
