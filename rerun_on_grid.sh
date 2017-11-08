@@ -5,7 +5,7 @@ source /gpfs/main/home/ctrimbac/envs/tensorflow/bin/activate
 
 for r in `seq 1 $NUMEXPS`
 do
-    while IFS='' read -r line || [[ -n "$SEED" ]]; do
+    while IFS='' read -r SEED || [[ -n "$SEED" ]]; do
         mkdir $SEED
         python -c "import random_mdp_exp as r; r.exp_file($SIZE, $ACTIONS, $SEED)"
         cd $SEED
