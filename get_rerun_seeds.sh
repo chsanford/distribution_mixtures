@@ -11,3 +11,5 @@ do
         echo "${d%/}" >> $RERUNFILE
     fi
 done
+
+source move_results.sh
