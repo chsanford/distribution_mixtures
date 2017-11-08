@@ -9,7 +9,7 @@ def main(args):
     num_actions = int(args[2])
     deg = int(args[3])
     seed = int(args[4])
-    input_pol = [int(b) for b in format(int(args[5]), '0%db' % num_states)] if len(args) > 5 else []
+    input_pol = [format(int(args[5]), '0%db' % num_states)] if len(args) > 5 else []
 
     rmdp = r.RandomMDP(num_states,  num_actions, seed=seed)
     if not input_pol:
