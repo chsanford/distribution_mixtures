@@ -41,7 +41,7 @@ do
     do
         for p in `seq 0 $POLICIES`;
         do
-            qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $SEED $p
+            qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $POLYDIM $SEED $p
             COUNT=$((COUNT+1))
         done
     done
