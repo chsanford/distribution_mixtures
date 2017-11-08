@@ -13,4 +13,4 @@ done
 
 mkdir ./results/$NOW
 mv [0-9]* ./results/$NOW/.
-mv rerun.txt ./results/$NOW/.
+cp rerun.txt ./results/$NOW/.
