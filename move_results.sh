@@ -7,9 +7,6 @@ do
 	for f in $d/*.o*;
 	do
 		cat $f >> $d/results.csv
-	done
-	for f in $d/*.[o,e]*;
-	do
 		rm $f
 	done
 done
