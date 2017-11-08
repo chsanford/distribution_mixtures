@@ -4,8 +4,8 @@ RERUNFILE="rerun.txt"
 
 for d in [0-9]*/;
 do
-    SUB="$(grep -c ', suboptimal' $d*.o*)"
-    OPT="$(grep -c ', optimal' $d*.o*)"
+    SUB="$(cat $d*.o* | grep -c ', suboptimal')"
+    OPT="$(cat $d*.o* | grep -c ', optimal')"
     if (( OPT > SUB ));
     then
         echo $d >> $RERUNFILE
