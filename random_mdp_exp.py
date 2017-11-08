@@ -25,7 +25,7 @@ def main(args):
 
 def exp_file(num_states, num_actions, seed):
     with open(str(seed)+"/exp"+str(seed)+".txt", 'w') as f:
-        f.write(str(r.RandomMDP(int(num_states),int(num_actions),seed=int(seed))))
+        f.write(str(r.RandomMDP(int(num_states), int(num_actions), seed=int(seed))))
         f.close
     return
 

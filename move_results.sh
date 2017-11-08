@@ -9,6 +9,7 @@ do
 		cat $f >> $d/results.csv
 		rm $f
 	done
+	rm -f $d/*.e*
 done
 
 mkdir ./results/$NOW
