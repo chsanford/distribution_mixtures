@@ -8,6 +8,6 @@ do
     OPT="$(cat $d*.o* | grep -c ', optimal')"
     if (( OPT > SUB ));
     then
-        echo "${d%/}" #>> $RERUNFILE
+        echo "${d%/}" >> $RERUNFILE
     fi
 done
