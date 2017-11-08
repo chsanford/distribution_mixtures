@@ -1,14 +1,6 @@
 #!/usr/bin/env bash
 
-SIZE=4
-ACTIONS=2
-POLYDIM=2
-POLICIES=$(((1<<$SIZE)-1))
-ITER=`expr $SIZE - 1`
-NUMTRIALS=$2
-NUMEXPS=$1
-COUNT=0
-
+source run_config.sh
 source /gpfs/main/home/ctrimbac/envs/tensorflow/bin/activate
 
 for r in `seq 1 $NUMEXPS`
