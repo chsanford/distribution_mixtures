@@ -10,7 +10,7 @@ POLICY_OBEY_RATE = 0.9
 OPPOSITE_ACTION_RATE = 0.1
 DISCOUNT_FACTOR = 0.9
 
-def find_greedy_policy(initial_policy, transition, reward):
+def find_greedy_policy(initial_policy, transition, reward, poly_deg=3):
     '''
     For a given policy, optimizes the Q-values to minimize Least Squares Bellman
     error. Then, finds the policy minimizing error for those Q-values.
@@ -20,6 +20,12 @@ def find_greedy_policy(initial_policy, transition, reward):
         probability of tranditioning from s to s' with action a
     reward - an array representing reward for each state
     '''
+
+    if poly_deg:
+        global POLYNOMIAL_DEGREE
+        POLYNOMIAL_DEGREE = poly_deg
+
+    init_pol = np.asarray([float(p) for p in initial_policy])
 
     ## Set up q-values computation from weights and states
 
@@ -38,7 +44,7 @@ def find_greedy_policy(initial_policy, transition, reward):
 
     # Calculates Q-values from polynomial coefficients. The first row is for
     #   moving right and the second is for left.
-    q_values = tf.matmul(w, tf.transpose(state_basis_matrix))
+    q_values = tf.matmul(w, state_basis_matrix)
 
     # Maximum Q-value between 2 actions leaving each state
     max_action_q_values = tf.reduce_max(q_values, 0)
@@ -48,8 +54,8 @@ def find_greedy_policy(initial_policy, transition, reward):
 
     # Probability of choosing each action
     action_dist = np.asarray([
-        initial_policy * (1 - POLICY_OBEY_RATE) + (1 - initial_policy) * POLICY_OBEY_RATE,
-        initial_policy * POLICY_OBEY_RATE + (1 - initial_policy) * (1 - POLICY_OBEY_RATE)])
+        init_pol * (1 - POLICY_OBEY_RATE) + (1 - init_pol) * POLICY_OBEY_RATE,
+        init_pol * POLICY_OBEY_RATE + (1 - init_pol) * (1 - POLICY_OBEY_RATE)])
 
     # Probability of choosing each state from a prior state given the policy
     next_state_dist = []
@@ -99,13 +105,13 @@ def find_greedy_policy(initial_policy, transition, reward):
     for i in range(GRAD_DESCENT_ITERATIONS):
         sess.run(train)
 
-    print("state action dist", state_action_dist)
-    print("w", sess.run(w))
-    print("Q-Values", sess.run(q_values))
-    print("Max Q-Values", sess.run(max_action_q_values))
-    print("Next State Reward", sess.run(next_state_reward))
-    print("expected_future_reward", sess.run(expected_future_reward))
-    print("Error",sess.run(error))
+    # print("state action dist", state_action_dist)
+    # print("w", sess.run(w))
+    # print("Q-Values", sess.run(q_values))
+    # print("Max Q-Values", sess.run(max_action_q_values))
+    # print("Next State Reward", sess.run(next_state_reward))
+    # print("expected_future_reward", sess.run(expected_future_reward))
+    # print("Error",sess.run(error))
 
     w_val = sess.run(w)
     q_value_val = sess.run(q_values)

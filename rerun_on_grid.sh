@@ -3,9 +3,8 @@
 source run_config.sh
 source /gpfs/main/home/ctrimbac/envs/tensorflow/bin/activate
 
-for r in `seq 1 $NUMEXPS`
+while IFS='' read -r SEED || [[ -n "$SEED" ]];
 do
-    SEED=$RANDOM
     mkdir $SEED
     python -c "import random_mdp_exp as r; r.exp_file($SIZE, $ACTIONS, $SEED)"
     cd $SEED
@@ -40,9 +39,12 @@ do
 
     for t in `seq 1 $NUMTRIALS`;
     do
-        qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $POLYDIM $SEED
-        COUNT=$((COUNT+1))
+        for p in `seq 0 $POLICIES`;
+        do
+            qsub -l short -cwd ../python_exp.sh $SIZE $ACTIONS $POLYDIM $SEED $p
+            COUNT=$((COUNT+1))
+        done
     done
     cd ..
-done
+done < "rerun.txt"
 echo "$COUNT jobs submitted."
