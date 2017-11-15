@@ -6,7 +6,7 @@ import sys
 import matplotlib.pyplot as plt
 
 
-GRAD_DESCENT_ITERATIONS = 10 ** 4
+GRAD_DESCENT_ITERATIONS = 10 ** 5 # this may need tuning
 POLYNOMIAL_DEGREE = 3
 POLICY_OBEY_RATE = 0.9
 OPPOSITE_ACTION_RATE = 0.1
@@ -177,6 +177,13 @@ def weighted_error(state_action_distribution, weight):
     sess.run(w.assign(weight))
     return sess.run(error, {state_action_dist: state_action_distribution})
 
+def weighted_q_val_error(q_val, opt_q_val, weight):
+    '''
+    Computes the squared difference of some Q-values and the optimal Q-values,
+    where terms combined with weights based on the state-action distribution.
+    '''
+    return sum(sum(weight * (q_val - opt_q_val) ** 2))
+
 def visualize_hypothesis_errors(left_errors, right_errors):
     '''
     Plots a visualization of the errors of hypotheses for combinations of
@@ -246,13 +253,23 @@ def iteratively_learn_distributions(iterations, stationary_dist1, stationary_dis
     stationary_dist1 - a matrix representing the state-action dist of action 1
     stationary_dist2 - a matrix representing the state-action dist of action 2
     '''
-    _, stationary_weight1, _ = find_q_values(stationary_dist1)
-    _, stationary_weight2, _ = find_q_values(stationary_dist2)
+    q_vals1, stationary_weight1, _ = find_q_values(stationary_dist1)
+    q_vals2, stationary_weight2, _ = find_q_values(stationary_dist2)
+
+    print(q_vals1)
+    print(stationary_dist1)
 
     weight1_error1 = weighted_error(stationary_dist1, stationary_weight1)
     weight1_error2 = weighted_error(stationary_dist2, stationary_weight1)
     weight2_error1 = weighted_error(stationary_dist1, stationary_weight2)
     weight2_error2 = weighted_error(stationary_dist2, stationary_weight2)
+
+    ## Uncomment below code for new errors
+    # opt_q_vals = # (# actions) x (# states) numpy array
+    # weight1_error1 = weighted_q_val_error(q_vals1, opt_q_vals, stationary_dist1)
+    # weight1_error2 = weighted_q_val_error(q_vals2, opt_q_vals, stationary_dist1)
+    # weight2_error1 = weighted_q_val_error(q_vals1, opt_q_vals, stationary_dist2)
+    # weight2_error2 = weighted_q_val_error(q_vals2, opt_q_vals, stationary_dist2)
 
     errors2 = np.array([
         [weight1_error2],
@@ -270,10 +287,14 @@ def iteratively_learn_distributions(iterations, stationary_dist1, stationary_dis
         print(new_weight)
         print(new_stationary_dist)
 
-        _, new_stationary_weight, _ = find_q_values(new_stationary_dist)
+        new_q_vals, new_stationary_weight, _ = find_q_values(new_stationary_dist)
 
         new_weight_error1 = weighted_error(stationary_dist1, new_stationary_weight)
         new_weight_error2 = weighted_error(stationary_dist2, new_stationary_weight)
+
+        ## Uncomment for new errors
+        # new_weight_error1 = weighted_q_val_error(new_q_vals, opt_q_vals, stationary_dist1)
+        # new_weight_error2 = weighted_q_val_error(new_q_vals, opt_q_vals, stationary_dist2)
 
         errors2 = np.append(
             errors2, new_weight_error2)[np.newaxis].T
