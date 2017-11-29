@@ -91,6 +91,28 @@ class RandomMDP:
             v_next[state] = max_v
         return v_next, policy_curr
 
+    def sample(self, sample_size, dist=None):
+        sample = []
+        sa = np.array([[(s, a) for a in range(self.num_actions)] for s in range(self.num_states)],
+                      dtype=[('state','i4'), ('action','i4')])
+        for _ in range(sample_size):
+            if type(dist) != type(None):
+                s, a = np.random.choice(sa.flatten(), p=np.asarray(dist).flatten())
+            else:
+                s, a = np.random.choice(sa.flatten())
+            sp = self.get_next_state(s, a)
+            r = self.get_reward(sp)
+            sample.append((s, a, r, sp))
+        return sample
+
+    def state_action_dist(self, pol):
+        state_dist = np.transpose(np.asarray([self.stationary_dist(pol)]))
+        sa_dist = np.zeros((self.num_states, self.num_actions))
+        for s in range(self.num_states):
+            sa_dist[s][int(pol[s])] = 1.0
+        return np.asarray(state_dist * sa_dist)
+
+
     def __str__(self):
         # Format string to print T and R matrices.
         states = ["s%d" % state for state in range(self.num_states)]
@@ -105,6 +127,32 @@ class RandomMDP:
         out += "\n\nPolicies:\n"
         out += "\n".join(self.p_opt) + "\n\n"
         return out
+
+    def stationary_dist(self, pol):
+        pol = np.asarray([int(p) for p in pol]).reshape(-1)
+        assert self.num_actions==2
+        ### ADAPTED FROM CLAYTONS CODE. WORKS ONLY FOR 2 ACTION MDPS
+        ## Set up transition probabilities for the policy
+        success_prob = 0.9
+        # Probability of choosing each action
+        adj = (1 - success_prob) / (self.num_actions - 1)
+        action_dist = np.transpose((np.eye(self.num_actions)*(success_prob-adj))[pol] + adj)
+
+        # Probability of choosing each state from a prior state given the policy
+        next_state_dist = []
+        for state_index in range(self.num_states):
+            next_state_dist.append(
+                np.multiply(action_dist[0][state_index], self.transitions[state_index][0]) +
+                np.multiply(action_dist[1][state_index], self.transitions[state_index][1]))
+        next_state_dist = np.transpose(np.asarray(next_state_dist))
+
+        # Matrix used to find probabilities of the stationary distribution
+        stationary_matrix = next_state_dist - np.identity(self.num_states)
+        stationary_matrix[self.num_states - 1] = np.asarray([1] * self.num_states)
+
+        # Stationary distribution over states given policy
+        return np.transpose(np.matmul(
+            np.linalg.inv(stationary_matrix), np.asarray([[0]] * (self.num_states - 1) + [[1]]))).flatten()
 
 def main():
     #SANITY CHECK
@@ -133,6 +181,7 @@ def main():
     m.rewards = [0., 1., 1., -5., 1., 1., 0.]
     print m.solve()
     print m
+    print m.stationary_dist("1111111")
 
 
 if __name__ == '__main__':

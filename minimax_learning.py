@@ -281,6 +281,8 @@ def iteratively_learn_distributions(iterations, stationary_dist1, stationary_dis
     visualize_hypothesis_errors(errors1, errors2)
 
     for i in range(iterations):
+        print "errors2", errors2
+        print "errors1", errors1
         new_weight = get_worst_weight(errors2, errors1)
         new_stationary_dist = state_action_dist_mixture(stationary_dist1, stationary_dist2, new_weight)
 
