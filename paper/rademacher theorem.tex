@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage{amsthm, amsmath, amsfonts}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\newcommand{\hyp}{\mathcal{H}}
+\newcommand{\alg}{\mathcal{A}}
+\newcommand{\dist}{\mathcal{D}}
+\newcommand{\rade}{\mathcal{R}}
+\newcommand{\fun}{\mathcal{F}}
+\newcommand{\prob}[2]{\mathbb{P}_{#1}\left[{#2}\right]}
+\newcommand{\expect}[2]{\mathbb{E}_{#1}\left[{#2}\right]}
+ 
+\begin{document}
+Our algorithm outputs a stochastic classifier, $h_{\alg}$ that is a convex combination of other hypotheses in $\hyp$. We denote the class of functions which are convex combinations of functions in $\hyp$ as $conv(\hyp)$. 
+
+
+\begin{lemma}
+%The Rademacher complexity $\rade_{\dist}(\fun)$ of a class of functions $\fun$ changes linearly as we move between convex combinations of two sampling distributions $\dist_A$ and $\dist_B$, where $\dist = \alpha\dist_A+(1-\alpha)\dist_B \in conv(\{\dist_A, \dist_B\})$.
+The Rademacher complexity defined over a convex combination of distributions is linear with respect to the sample distribution.
+\end{lemma}
+
+\begin{proof}
+\begin{align*}
+\rade_{\dist}(\fun)
+&= \expect{S\sim\dist}{\hat{\rade}_{S}(\fun)}
+\\ &= \sum_{S}\prob{\dist}{S}\left(\hat{\rade}_{S}(\fun)\right)
+\\ &= \sum_{S}\left(\alpha\prob{\dist_A}{S}+(1-\alpha)\prob{\dist_B}{S}\right)\left(\hat{\rade}_{S}(\fun)\right)
+\\ &= \sum_{S}\alpha\prob{\dist_A}{S}\left(\hat{\rade}_{S}(\fun)\right)+(1-\alpha)\prob{\dist_B}{S}\left(\hat{\rade}_{S}(\fun)\right)
+\\ &= \sum_{S}\alpha\prob{\dist_A}{S}\left(\hat{\rade}_{S}(\fun)\right)+ \sum_{S}(1-\alpha)\prob{\dist_B}{S}\left(\hat{\rade}_{S}(\fun)\right)
+\\ &= \alpha\sum_{S}\prob{\dist_A}{S}\left(\hat{\rade}_{S}(\fun)\right)+ (1-\alpha)\sum_{S}\prob{\dist_B}{S}\left(\hat{\rade}_{S}(\fun)\right)
+\\ &= \alpha\rade_{\dist_A}(\fun) + (1-\alpha)\rade_{\dist_B}(\fun)
+&\qedhere
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+Let $\fun' = conv(\fun)$. Then $\rade_{\dist}(\fun') = \rade_{\dist}(\fun)$.
+\end{lemma}
+\begin{proof}
+Find citation.
+\end{proof}
+\end{document}
